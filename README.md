@@ -1,2 +1,2 @@
 # abuseio-hook-delegate
-an AbuseIO hook module which delegates event to another AbuseIO instance
+an AbuseIO hook module which delegates an event to another AbuseIO instance

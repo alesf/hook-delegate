@@ -1,0 +1,31 @@
+{
+  "name": "abuseio/hook-delegate",
+  "description": "Hook module that delegates event to other AbuseIO instances",
+  "version": "1.0.0",
+  "keywords": ["laravel", "abuseio", "hook", "delegate"],
+  "homepage": "http://abuse.io",
+  "type": "library",
+  "license": "GPL-2.0",
+  "authors": [
+    {
+      "name": "AbuseIO Foundation",
+      "email": "dev@abuse.io",
+      "homepage": "http://abuse.io",
+      "role": "Lead"
+    }
+  ],
+  "support": {
+    "email": "dev@abuse.io",
+    "issues": "https://github.com/AbuseIO/AbuseIO/issues",
+    "irc": "irc://irc.freenode.net/abuseio",
+    "source": "https://github.com/AbuseIO/hook-delegate",
+    "docs": "https://abuse.io/resources/documentation/"
+  },
+  "require": {
+    "php": ">=5.5.9",
+    "zendframework/zend-http": "^2.6"
+  },
+  "autoload": {
+    "psr-4": {"AbuseIO\\Hook\\": "src/"}
+  }
+}
