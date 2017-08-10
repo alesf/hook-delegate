@@ -31,16 +31,20 @@ class Delegate implements HookInterface
             $incident = Incident::fromEvent($object);
             $contact = FindContact::byIP($incident->ip);
 
-            if (!is_null($contact->api_host) && !is_null($contact->api_key)) {
+            if (!is_null($contact->api_host) && !is_null($contact->token)) {
                 // we have a contact with a delegated AbuseIO instance
-                // use that AbuseIO's api to create a incicent
-                Log::debug('Sending incident to ' . $contact->api_host);
+                // use that AbuseIO's api to create a incident
+
+                $token = $contact->token;
+                $url = $contact->api_host . "/incidents";
 
                 // send incident
-                $url = $contact->api_host . "/incidents";
-                $token = $contact->api_key;
+                Log::debug('Sending incident to ' . $url);
                 $client = new Client($url);
-                $client->setHeaders('X-API-TOKEN', $token);
+                $client->setHeaders([
+                    'Accept'      => 'application/json',
+                    'X-API-TOKEN' => $token
+                ]);
                 $client->setParameterPost($incident->toArray());
                 $client->setMethod('POST');
                 $response = $client->send();
