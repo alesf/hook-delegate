@@ -5,7 +5,6 @@ namespace AbuseIO\Hook;
 use AbuseIO\Jobs\FindContact;
 use AbuseIO\Hook\HookInterface;
 use AbuseIO\Models\Incident;
-use Log;
 use Zend\Http\Client;
 
 class Delegate implements HookInterface
