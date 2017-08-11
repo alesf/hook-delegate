@@ -6,6 +6,7 @@ use AbuseIO\Jobs\FindContact;
 use AbuseIO\Hook\HookInterface;
 use AbuseIO\Models\Incident;
 use Zend\Http\Client;
+use Log as Logger;
 
 class Delegate implements HookInterface
 {
@@ -38,7 +39,7 @@ class Delegate implements HookInterface
                 $url = $contact->api_host . "/incidents";
 
                 // send incident
-                Log::notice('Sending incident to ' . $url);
+                Logger::notice('Sending incident to ' . $url);
                 $client = new Client($url);
                 $client->setHeaders([
                     'Accept'      => 'application/json',
@@ -49,7 +50,7 @@ class Delegate implements HookInterface
                 $response = $client->send();
 
                 if (!$response->isSuccess()) {
-                   Log::notice(
+                   Logger::notice(
                        sprintf(
                            "Failure, statuscode: %d\n body: %s\n",
                            $response->getStatusCode(),
