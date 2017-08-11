@@ -38,7 +38,7 @@ class Delegate implements HookInterface
                 $url = $contact->api_host . "/incidents";
 
                 // send incident
-                Log::debug('Sending incident to ' . $url);
+                Log::notice('Sending incident to ' . $url);
                 $client = new Client($url);
                 $client->setHeaders([
                     'Accept'      => 'application/json',
@@ -49,7 +49,7 @@ class Delegate implements HookInterface
                 $response = $client->send();
 
                 if (!$response->isSuccess()) {
-                   Log::debug(
+                   Log::notice(
                        sprintf(
                            "Failure, statuscode: %d\n body: %s\n",
                            $response->getStatusCode(),
