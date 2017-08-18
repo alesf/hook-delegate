@@ -88,7 +88,7 @@ class Delegate implements HookInterface
         } else {
             $contact = FindContact::byIP($ticket->ip);
             if (!is_null($contact->api_host) && !is_null($contact->token)) {
-                $result['url'] = $contact->api_host . '/ticket' . $part;
+                $result['url'] = $contact->api_host . '/tickets' . $part;
                 $result['token'] = $contact->token;
             }
         }
