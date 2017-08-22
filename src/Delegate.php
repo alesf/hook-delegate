@@ -45,17 +45,27 @@ class Delegate implements HookInterface
         }
 
         if ($object instanceof $models['Ticket'] && $event == 'updating') {
-            // we are only interested in the statuses
-            $original = $object->getOriginal();
-            if (($object->status_id !== $original['status_id']) ||
-                ($object->contact_status_id !== $original['contact_status_id']))
-            {
-                // find the token and url
-                $api = self::getTicketUrl($object, '/syncstatus');
-                if (!empty($api)) {
+            $ticket = $object;
+            // we are only interested in the status_id
+            $original = $ticket->getOriginal();
+            if ($ticket->status_id !== $original['status_id']) {
 
-                    // send ticket
-                    self::send($api['url'], $api['token'], $object->toArray());
+                if ($ticket->hasParent()) {
+                    // sync to parent
+                    $api = self::getTicketUrl($object, false, '/synccontactstatus');
+                    if (!empty($api)) {
+                        // send ticket
+                        self::send($api['url'], $api['token'], $object->toArray());
+                    }
+                }
+
+                if ($ticket->hasChild()) {
+                    // sync to child
+                    $api = self::getTicketUrl($object, true, '/syncstatus');
+                    if (!empty($api)) {
+                        // send ticket
+                        self::send($api['url'], $api['token'], $object->toArray());
+                    }
                 }
             }
         }
@@ -75,21 +85,32 @@ class Delegate implements HookInterface
      * get the api_url and token from the ticket
      *
      * @param Ticket $ticket
+     *  the ticket to be used
+     *
+     * @param bool $parent
+     *  are we the parent ticket ?
+     *
      * @param string $part
+     *  extra part of the url
+     *
      * @return array
      */
-    private static function getTicketUrl(Ticket $ticket, $part = '')
+    private static function getTicketUrl(Ticket $ticket, $parent = true, $part = '')
     {
         $result = [];
 
-        if (!is_null($ticket->remote_api_url) && !is_null($ticket->remote_api_token)) {
-            $result['url'] = $ticket->remote_api_url . $part;
-            $result['token'] = $ticket->remote_api_token;
-        } else {
+        if ($parent) {
+            // return the contact api url
             $contact = FindContact::byIP($ticket->ip);
             if (!is_null($contact->api_host) && !is_null($contact->token)) {
                 $result['url'] = $contact->api_host . '/tickets' . $part;
                 $result['token'] = $contact->token;
+            }
+        } else {
+            // return the remote_api_url from the ticket
+            if (!is_null($ticket->remote_api_url) && !is_null($ticket->remote_api_token)) {
+                $result['url'] = $ticket->remote_api_url . $part;
+                $result['token'] = $ticket->remote_api_token;
             }
         }
 
