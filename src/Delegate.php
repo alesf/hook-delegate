@@ -28,11 +28,22 @@ class Delegate implements HookInterface
             ];
 
         if ($object instanceof $models['Event'] && $event == 'created') {
-            // convert the event to an incident
-            $incident = Incident::fromEvent($object);
-            $contact = FindContact::byIP($incident->ip);
+
+            $ticket = Ticket::find($object->ticket_id);
+            $contact = FindContact::byIP($ticket->ip);
 
             if (!is_null($contact->api_host) && !is_null($contact->token)) {
+                // wait until the linked ticket has an ash_token_ip
+                // the ash_token_ip is filled by an observer, so it's not always
+                // on time.
+
+                while(is_null($ticket->ash_token_ip)) {
+                    usleep(100);
+                }
+
+                // convert the event to an incident
+                $incident = Incident::fromEvent($object);
+
                 // we have a contact with a delegated AbuseIO instance
                 // use that AbuseIO's api to create a incident
 
