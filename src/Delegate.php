@@ -37,8 +37,8 @@ class Delegate implements HookInterface
                 // the ash_token_ip is filled by an observer, so it's not always
                 // on time.
 
-                while(is_null($ticket->ash_token_ip)) {
-                    usleep(100);
+                while(empty($ticket->ash_token_ip)) {
+                    usleep(250);
                 }
 
                 // convert the event to an incident
