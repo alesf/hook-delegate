@@ -33,13 +33,6 @@ class Delegate implements HookInterface
             $contact = FindContact::byIP($ticket->ip);
 
             if (!is_null($contact->api_host) && !is_null($contact->token)) {
-                // wait until the linked ticket has an ash_token_ip
-                // the ash_token_ip is filled by an observer, so it's not always
-                // on time.
-
-                while(empty($ticket->ash_token_ip)) {
-                    usleep(250);
-                }
 
                 // convert the event to an incident
                 $incident = Incident::fromEvent($object);
