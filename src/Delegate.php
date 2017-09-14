@@ -32,7 +32,7 @@ class Delegate implements HookInterface
             $ticket = Ticket::find($object->ticket_id);
             $contact = FindContact::byIP($ticket->ip);
 
-            if (!is_null($contact->api_host) && !is_null($contact->token)) {
+            if (!empty($contact->api_host) && !empty($contact->token)) {
 
                 // convert the event to an incident
                 $incident = Incident::fromEvent($object);
