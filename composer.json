@@ -1,7 +1,7 @@
 {
   "name": "abuseio/hook-delegate",
   "description": "Hook module that delegates event to other AbuseIO instances",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": ["laravel", "abuseio", "hook", "delegate"],
   "homepage": "http://abuse.io",
   "type": "library",
@@ -26,6 +26,9 @@
     "zendframework/zend-http": "^2.6"
   },
   "autoload": {
-    "psr-4": {"AbuseIO\\Hook\\": "src/"}
+    "psr-4": {
+      "AbuseIO\\Hook\\": "src/hook/",
+      "AbuseIO\\Jobs\\": "src/job/"
+    }
   }
 }

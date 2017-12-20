@@ -3,14 +3,16 @@
 namespace AbuseIO\Hook;
 
 use AbuseIO\Jobs\FindContact;
+use AbuseIO\Jobs\Delegate as DelegateJob;
 use AbuseIO\Hook\HookInterface;
 use AbuseIO\Models\Incident;
 use AbuseIO\Models\Ticket;
-use Zend\Http\Client;
-use Log as Logger;
+use Illuminate\Support\Facades\Bus;
+
 
 class Delegate implements HookInterface
 {
+
     /**
      * dictated by HookInterface
      * the method called from hook-common
@@ -130,25 +132,18 @@ class Delegate implements HookInterface
      */
     private static function send($url, $token = '', $data = [])
     {
-        // send incident
-        Logger::notice('Sending data to ' . $url);
-        $client = new Client($url);
-        $client->setHeaders([
-            'Accept'      => 'application/json',
-            'X-API-TOKEN' => $token
-        ]);
-        $client->setMethod('POST');
-        $client->setParameterPost($data);
-        $response = $client->send();
 
-        if (!$response->isSuccess()) {
-            Logger::notice(
-                sprintf(
-                    "Failure, statuscode: %d\n body: %s\n",
-                    $response->getStatusCode(),
-                    $response->getBody()
-                )
-            );
-        }
+        // create the Delegate Job with the correct information
+        $jobData = [
+            'url' => $url,
+            'token' => $token,
+            'data' => $data
+        ];
+
+        $delegate = (new DelegateJob($jobData))->onQueue('abuseio_delegation');
+
+        // Dispatch the Job
+        Bus::dispatch($delegate);
+
     }
 }
