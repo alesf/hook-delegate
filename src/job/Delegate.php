@@ -3,9 +3,11 @@
 namespace AbuseIO\Jobs;
 
 use Exception;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Log;
 use Zend\Http\Client;
 
@@ -13,9 +15,9 @@ use Zend\Http\Client;
  * Class Delegate
  * @package AbuseIO\Jobs
  */
-class Delegate extends Job implements SelfHandling, ShouldQueue
+class Delegate extends Job implements ShouldQueue, SelfHandling
 {
-    use InteractsWithQueue;
+    use InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * @var array
@@ -45,6 +47,7 @@ class Delegate extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
+
         Log::notice('Sending data to ' . $this->data['url']);
         $client = new Client($this->data['url']);
         $client->setHeaders([
@@ -71,7 +74,7 @@ class Delegate extends Job implements SelfHandling, ShouldQueue
      */
     public function failed()
     {
-        Log::notice("Couldn't connect to other AbuseIO instance, will try again in 30 seconds");
+        Log::notice("Couldn't connect to other AbuseIO instance, will try again");
 
         // wait 30 seconds for next attempt
         $this->release(30);

@@ -4,10 +4,9 @@ namespace AbuseIO\Hook;
 
 use AbuseIO\Jobs\FindContact;
 use AbuseIO\Jobs\Delegate as DelegateJob;
-use AbuseIO\Hook\HookInterface;
 use AbuseIO\Models\Incident;
 use AbuseIO\Models\Ticket;
-use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Queue;
 
 
 class Delegate implements HookInterface
@@ -140,10 +139,10 @@ class Delegate implements HookInterface
             'data' => $data
         ];
 
-        $delegate = (new DelegateJob($jobData))->onQueue('abuseio_delegation');
+        $delegate = (new DelegateJob($jobData))->delay(30);
 
         // Dispatch the Job
-        Bus::dispatch($delegate);
+        Queue::pushOn('abuseio_delegation', $delegate);
 
     }
 }
