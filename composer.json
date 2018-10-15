@@ -1,7 +1,7 @@
 {
   "name": "abuseio/hook-delegate",
   "description": "Hook module that delegates event to other AbuseIO instances",
-  "version": "1.0.2",
+  "version": "2.1.1",
   "keywords": ["laravel", "abuseio", "hook", "delegate"],
   "homepage": "http://abuse.io",
   "type": "library",
