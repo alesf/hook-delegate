@@ -22,8 +22,8 @@
     "docs": "https://abuse.io/resources/documentation/"
   },
   "require": {
-    "php": ">=7.4.0",
-    "zendframework/zend-http": "^2.6"
+    "php": "^8.0",
+    "laminas/laminas-http": "^2.17"
   },
   "autoload": {
     "psr-4": {
